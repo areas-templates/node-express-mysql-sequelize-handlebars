@@ -1,5 +1,5 @@
 {
-  "name": "your-app",
+  "name": "template",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
@@ -9,15 +9,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/you-or-your-org/your-repo.git"
+    "url": ""
   },
   "keywords": [],
   "author": "Christian Areas",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/you-or-your-org/your-repo/issues"
+    "url": ""
   },
-  "homepage": "https://github.com/you-or-your-org/your-repo#readme",
+  "homepage": "",
   "dependencies": {
     "bcrypt": "^5.1.0",
     "dotenv": "^16.0.3",
@@ -27,6 +27,8 @@
     "sequelize": "^6.28.0"
   },
   "devDependencies": {
+    "eslint": "^8.31.0",
+    "eslint-plugin-node": "^11.1.0",
     "nodemon": "^2.0.20",
     "tailwindcss": "^3.2.4"
   }
