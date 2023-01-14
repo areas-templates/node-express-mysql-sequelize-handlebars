@@ -4,49 +4,63 @@ const userRouter = require("express").Router()
 // Import the models.
 const { User } = require("../../../models")
 
+// Search for the user.
+const searchForUser = async (userId) => {
+	const user = await User.findOne({
+		attributes: [
+			"userId",
+			"displayName",
+			"firstName",
+			"lastName",
+			"email",
+		],
+		where: {
+			"userId": userId,
+		},
+	})
+	if (user) {
+		return user.toJSON()
+	} else if (!user) {
+		return null
+	}
+}
+
 // POST /api/user (signUpUser).
 userRouter.post("/user", async (req, res) => {
 	try {
 		// Create the user.
-		const user = await User.bulkCreate(req.body)
+		const newUser = await User.create(req.body)
 		// Return the user.
-		res.status(200).json(user.toJSON())
+		const user = await searchForUser(newUser.userId)
+		res.status(200).json(user)
 	} catch (err) {
 		res.status(500).json(err)
 	}
 })
 
-// GET /api/user/:user (getUser).
-userRouter.get("/user/:user", async (req, res) => {
+// GET /api/user/:userId (getUser).
+userRouter.get("/user/:userId", async (req, res) => {
 	try {
-		// Search for the user by the user ID.
-		const user = await User.findOne({
-			attributes: [
-				"userId",
-				"displayName",
-				"firstName",
-				"lastName",
-				"email",
-			],
-			where: {
-				"userId": req.params.user,
-			},
-		})
+		// Search for the user.
+		const user = await searchForUser(req.params.userId)
 		// If the user’s found, return the user. Else, return a 404 message.
-		if (user) {
-			res.status(200).json(user.toJSON())
-		} else if (!user) {
-			res.status(404).json("User not found.")	
-		}
+		if (user) res.status(200).json(user)
+		else res.status(404).json("User not found.")
 	} catch (err) {
 		res.status(500).json(err)
 	}
 })
 
-// PATCH /api/user/:user (updateUser).
-userRouter.patch("/user/:user", async (req, res) => {
+// PATCH /api/user/:userId (updateUser).
+userRouter.patch("/user/:userId", async (req, res) => {
 	try {
-		res.status(200).json("So far, so good!")
+		// Update the user.
+		await User.update(req.body, { where: { userId: req.params.userId }, individualHooks: true })
+		// Search for the user.
+		const user = await searchForUser(req.params.userId)
+		// If the user’s found, return the user. Else, return a 404 message.
+		if (user) res.status(200).json(user)
+		else res.status(404).json("User not found.")
 	} catch (err) {
 		res.status(500).json(err)
 	}
